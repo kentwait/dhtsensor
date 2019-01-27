@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='dhtsensor',
-    version='0.2.0',
+    version='0.2.1',
     author='Kent Kawashima',
     author_email='kentkawashima@gmail.com',
     description='Simplifies reading temperature and humidity data from a DHT11/22 sensor using pigpio',
