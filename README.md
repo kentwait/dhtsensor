@@ -15,10 +15,6 @@ pip install dhtsensor
 
 ## Quickstart
 ```python
-# Connect to pigpio
-import pigpio
-pi = pigpio.pi()
-
 # Create a new Sensor object for a DHT22 temperature and humidity sensor
 # GPIO to read from: 21
 # GPIO that powers the sensor: 20

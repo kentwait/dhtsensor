@@ -6,7 +6,7 @@ import pigpio
 Reading =  namedtuple('Reading', 'temp rh')
 
 class Sensor(object):
-    def __init__(self, pi, gpio_pin, powered_by=None):
+    def __init__(self, gpio_pin, powered_by=None):
         """Create a new DHT sensor object that reads from a given GPIO pin.
 
         Parameters
@@ -18,7 +18,7 @@ class Sensor(object):
             Otherwise, sensor is powered by 3V3 or 5V pin
 
         """
-        self.pi = pi
+        self.pi = pigpio.pi()
         self.data_gpio = gpio_pin
         self.power_gpio = powered_by
         self.data = []
@@ -27,15 +27,21 @@ class Sensor(object):
         self._rh = -999
         self._temp = -999
     
+    @property
+    def activated(self):
+        return self.online
+
     def activate(self):
-        if self.power_gpio is not None:
-            self.pi.write(self.power_gpio, 1)
-            self.online = True
+        if self.power_gpio is None:
+            raise ValueError('Sensor is not powered by a GPIO pin. Already powered on.')
+        self.pi.write(self.power_gpio, 1)
+        self.online = True
     
     def deactivate(self):
-        if self.power_gpio is not None:
-            self.pi.write(self.power_gpio, 0)
-            self.online = False
+        if self.power_gpio is None:
+            raise ValueError('Sensor is not powered by a GPIO pin. Cannot power off.')
+        self.pi.write(self.power_gpio, 0)
+        self.online = False
     
     def read(self, times=1, interval=3):
         """Measures temperature and humidity for a set number of times
@@ -55,7 +61,7 @@ class Sensor(object):
 
         """
         if not self.online:
-            raise ValueError('Sensor is not online')
+            raise ValueError('Sensor is not online. Try calling the activate() method.')
 
         # Initialize values
         no_response = 0
