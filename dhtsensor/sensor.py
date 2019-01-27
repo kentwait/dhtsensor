@@ -1,44 +1,9 @@
+from collections import namedtuple
 import time
 import atexit
 import pigpio
 
-class Reading(object):
-    def __init__(self, temp, rh):
-        """Creates a new reading from temperature and relative humidity values
-
-        Parameters
-        ----------
-        temp : float
-            temperature in degrees Celsius
-        rh : float
-            Relative humidity in percent from 0-100
-
-        """
-        self._temp = temp
-        self._rh = rh
-
-    @property
-    def temperature(self):
-        return self._temp
-
-    @property
-    def temp(self):
-        return self._temp
-
-    @property
-    def humidity(self):
-        return self._rh
-
-    @property
-    def rh(self):
-        return self._rh
-
-    def __repr__(self):
-        return '{}(temp={}, rh={})'.format(
-            self.__class__.__name__,
-            self._temp, self._rh
-        )
-
+Reading =  namedtuple('Reading', 'temp rh')
 
 class Sensor(object):
     def __init__(self, pi, gpio_pin, powered_by=None):
@@ -259,5 +224,4 @@ class Sensor(object):
             Returns the temperature in degrees Celsius and the humidity
 
         """
-        reading = self.read()[0]
-        return reading.temp, reading.rh
+        return self.read()[0]
